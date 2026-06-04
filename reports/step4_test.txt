@@ -1,0 +1,28 @@
+=== Step 4.7 Service Test (TestClient against the real ASGI app) ===
+Redis backend: fakeredis (in-process; real Redis not reachable)
+/health -> {"status": "ok", "redis_backend": "fakeredis (in-process; real Redis not reachable)"}
+
+# Real NORMAL row from labelled.csv (expect label=0)
+  features=[0.35, 0.0846, 0.0, -0.8773]
+-> {"anomaly_score": 3e-06, "label": 0}
+
+# Real ANOMALY row from labelled.csv (expect label=1)
+  features=[0.2597, 0.1848, 0.7844, -0.9766]
+-> {"anomaly_score": 0.999886, "label": 1}
+
+# Twin state for v001 (should equal the last /predict result)
+curl http://localhost:8000/state/v001
+-> {"anomaly_score": 0.999886, "label": 1}
+
+--- Partner-Procedure illustrative vectors (reference) ---
+# doc 'normal' [0.1,0.05,-0.02,0.0]: brake_norm=0.0 == brake 0.5 (mid-brake,
+#   off the normal distribution) -> the model reasonably flags it.
+-> {"anomaly_score": 0.999944, "label": 1}
+# doc 'anomaly' [0.85,-0.90,0.0,0.95]: high speed + hard brake
+-> {"anomaly_score": 1.0, "label": 1}
+
+=== Assertions ===
+real normal  label == 0 : True
+real anomaly label == 1 : True
+doc  anomaly label == 1 : True
+state round-trips        : True

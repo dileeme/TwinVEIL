@@ -1,0 +1,8 @@
+=== §3.4 Weight-export verification (manual vs sklearn) ===
+Sample 0: manual=1.000000  sklearn=1.000000  match=True
+Sample 1: manual=0.000258  sklearn=0.000258  match=True
+Sample 2: manual=0.007468  sklearn=0.007468  match=True
+Sample 3: manual=0.000149  sklearn=0.000149  match=True
+Sample 4: manual=0.000083  sklearn=0.000083  match=True
+
+All 5 match: True

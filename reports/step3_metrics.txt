@@ -1,0 +1,21 @@
+=== §3.3 Evaluation (held-out test set) ===
+Accuracy  : 0.9974   (target >= 0.90)  [PASS]
+Precision : 0.9558   (target >= 0.75)  [PASS]
+Recall    : 0.9968   (target >= 0.80)  [PASS]
+F1        : 0.9759   (target >= 0.78)  [PASS]
+ROC-AUC   : 0.9991   (target >= 0.90)  [PASS]
+
+Confusion matrix [rows=true, cols=pred] (Normal, Anomaly):
+[[56632   145]
+ [   10  3137]]
+TN=56632  FP=145  FN=10  TP=3137
+
+              precision    recall  f1-score   support
+
+      Normal     0.9998    0.9974    0.9986     56777
+     Anomaly     0.9558    0.9968    0.9759      3147
+
+    accuracy                         0.9974     59924
+   macro avg     0.9778    0.9971    0.9873     59924
+weighted avg     0.9975    0.9974    0.9974     59924
+

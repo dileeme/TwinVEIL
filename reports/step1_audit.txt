@@ -1,0 +1,47 @@
+=== df.info() ===
+<class 'pandas.DataFrame'>
+RangeIndex: 300000 entries, 0 to 299999
+Data columns (total 5 columns):
+ #   Column              Non-Null Count   Dtype  
+---  ------              --------------   -----  
+ 0   speed               299940 non-null  float64
+ 1   longitudinal_accel  299940 non-null  float64
+ 2   steering_angle      299940 non-null  float64
+ 3   brake_pressure      299940 non-null  float64
+ 4   timestamp           299950 non-null  float64
+dtypes: float64(5)
+memory usage: 11.4 MB
+
+=== df.describe() ===
+               speed  longitudinal_accel  steering_angle  brake_pressure     timestamp
+count  299940.000000       299940.000000   299940.000000   299940.000000  2.999500e+05
+mean       20.059784           -0.117848        4.193635        0.046217  1.700015e+12
+std         2.703084            1.421053       39.773452        0.141495  8.660423e+06
+min         0.003466          -15.705541      -60.000000        0.000000  1.700000e+12
+25%        19.137394           -0.784259       -9.890650        0.000000  1.700007e+12
+50%        20.010414           -0.030195        0.183186        0.000000  1.700015e+12
+75%        20.899439            0.704841       10.490970        0.030648  1.700023e+12
+max        84.211456           15.908878      429.953204        0.999962  1.700030e+12
+
+=== Nulls per column ===
+speed                 60
+longitudinal_accel    60
+steering_angle        60
+brake_pressure        60
+timestamp             50
+
+Duplicates (full-row): 0
+Duplicate timestamps:  99
+Null timestamps:       50
+
+Saved histograms: reports/hist_speed.png, reports/hist_longitudinal_accel.png, reports/hist_steering_angle.png, reports/hist_brake_pressure.png
+
+=== Cleaning (row counts after each rule) ===
+Rule 0  start                              : 300,000
+Rule 1  sort + drop dup/null timestamps    : 299,900
+Rule 2  drop speed<0 or >60                : 299,800
+Rule 3  clip accel to [-10, 8]  (no drop)  : 299,800
+Rule 4  drop NaN in any feature            : 299,620
+Rule 5  brake_pressure dtype=float64, max=1.000 -> already 0-1, no change
+
+Wrote data/processed/cleaned.csv: 299,620 rows

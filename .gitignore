@@ -1,0 +1,27 @@
+# ---- Python virtual environment & pip ----
+.venv/
+venv/
+.pip/
+pip-wheel-metadata/
+
+# ---- Python caches / build ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ---- Generated datasets (large; reproducible via scripts/) ----
+# Tracked: scripts that generate them, trained model weights, reports.
+data/
+*.csv
+
+# ---- Runtime / logs ----
+*.log
+reports/uvicorn*.log
+
+# ---- OS / editor junk ----
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/

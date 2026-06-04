@@ -1,0 +1,21 @@
+=== §2.2 Anomaly Injection ===
+initial anomaly rate (defaults): 0.0525
+
+final anomaly rate: 0.0525
+class counts: normal(0)=283,887  anomaly(1)=15,733
+
+final thresholds used:
+{
+  "rule1_hard_brake_at_speed": {
+    "speed>": 15.0,
+    "accel<": -3.5
+  },
+  "rule2_steering_oscillation": {
+    "abs(steering)>": 200.0,
+    "abs(accel)<": 0.5
+  },
+  "rule3_acceleration_spike": {
+    "accel>": 3.0,
+    "speed<": 5.0
+  }
+}
