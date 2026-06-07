@@ -1,0 +1,18 @@
+{
+  "speed": [
+    0,
+    40
+  ],
+  "longitudinal_accel": [
+    -8,
+    5
+  ],
+  "steering_angle": [
+    -500,
+    500
+  ],
+  "brake_pressure": [
+    0,
+    1
+  ]
+}

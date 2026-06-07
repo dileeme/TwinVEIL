@@ -1,0 +1,16 @@
+ckks:
+  poly_modulus_degree: 16384       # 2^14
+  coeff_mod_bit_sizes: [60, 40, 40, 40, 40, 60]
+  global_scale_bits: 40            # 2^40
+
+paths:
+  weights: models/lr_weights.npy
+  bias: models/lr_bias.npy
+  scaler_bounds: models/scaler_bounds.json
+  # pub_ctx is generated at runtime and sent to the server; not persisted by default
+  pub_ctx: models/ckks_pub_ctx.bin
+
+server:
+  base_url: http://127.0.0.1:8000
+  predict_endpoint: /predict_he
+  health_endpoint: /health
