@@ -3,4 +3,5 @@ uvicorn==0.30.1
 redis==5.0.4
 numpy==1.26.4
 scikit-learn==1.5.0
+pytest
 # tenseal==0.3.14   -- uncomment when integration begins
