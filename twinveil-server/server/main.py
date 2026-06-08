@@ -135,7 +135,10 @@ def predict_he(req: HERequest):
             status_code=400,
             detail="No public context uploaded. Call POST /upload_context first.",
         )
-    encrypted_result = predict_encrypted(req.ciphertext, pub_ctx)
+    try:
+        encrypted_result = predict_encrypted(req.ciphertext, pub_ctx)
+    except Exception as exc:
+        raise HTTPException(status_code=422, detail=f"Invalid ciphertext: {exc}") from exc
     return {"vehicle_id": req.vehicle_id, "encrypted_result": encrypted_result}
 
 

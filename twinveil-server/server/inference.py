@@ -74,17 +74,21 @@ def predict_encrypted(ciphertext_b64: str, pub_ctx_b64: str) -> str:
     x_enc = ts.lazy_ckks_vector_from(ct_bytes)
     x_enc.link_context(ctx)
 
-    # Homomorphic dot product: w · x_enc
-    # CKKSVector supports scalar list multiplication then sum via dot()
-    dot_enc = x_enc.dot(w.tolist())
+    # Scale weights and bias into the poly sigmoid's valid range [-5, 5].
+    # Worst-case |w·x+b| <= sum(|w|)+|b| ≈ 79.7; dividing by 16 keeps it <= 4.98.
+    # Scaling in numpy (not on the ciphertext) keeps the CKKS scale at 2^40.
+    # The label threshold (score >= 0.5) is preserved because sigmoid is monotone:
+    # sigmoid(w·x+b) >= 0.5  iff  w·x+b >= 0  iff  (w/16)·x + b/16 >= 0.
+    _S = 16.0
+    w_s = (w / _S).tolist()
+    b_s = b / _S
 
-    # Add plaintext bias: result = w·x + b
-    linear_enc = dot_enc + b
+    dot_enc    = x_enc.dot(w_s)
+    linear_enc = dot_enc + b_s
 
     # Degree-3 polynomial sigmoid: σ(t) ≈ 0.5 + 0.197t − 0.004t³
-    # Compute t² then t³ = t²·t to keep scale manageable across levels.
-    sq_enc = linear_enc * linear_enc          # level +1
-    cubic_enc = sq_enc * linear_enc           # level +2
+    sq_enc    = linear_enc * linear_enc   # level +1
+    cubic_enc = sq_enc * linear_enc       # level +2
     score_enc = linear_enc * 0.197 - cubic_enc * 0.004 + 0.5
 
     return base64.b64encode(score_enc.serialize()).decode()
