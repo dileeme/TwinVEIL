@@ -1,0 +1,12 @@
+tenseal==0.3.16
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+redis==5.0.4
+fakeredis==2.36.0
+numpy==1.26.4
+scikit-learn==1.5.0
+requests==2.32.3
+pydantic==2.13.4
+httpx
+pytest
+pyyaml

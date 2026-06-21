@@ -14,9 +14,18 @@ import json
 import sys
 from typing import Optional
 
+import sys
+from pathlib import Path
+
 import requests
 
-from encryptor import encrypt, decrypt_result, public_context_b64
+# Allow both `python client/telemetry_client.py` (from project root)
+# and `python telemetry_client.py` (from client/) to resolve the sibling module.
+_CLIENT_DIR = Path(__file__).resolve().parent
+if str(_CLIENT_DIR) not in sys.path:
+    sys.path.insert(0, str(_CLIENT_DIR))
+
+from encryptor import encrypt, decrypt_result, public_context_b64  # noqa: E402
 
 DEFAULT_BASE_URL = "http://127.0.0.1:8000"
 

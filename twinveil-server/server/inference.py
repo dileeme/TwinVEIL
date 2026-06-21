@@ -21,6 +21,8 @@ from pathlib import Path
 import numpy as np
 import tenseal as ts
 
+from .poly_approx import POLY_A0, POLY_A1, POLY_A3, POLY_SCALE
+
 _MODELS_DIR = Path(__file__).parent.parent.parent / "models"
 
 
@@ -74,21 +76,19 @@ def predict_encrypted(ciphertext_b64: str, pub_ctx_b64: str) -> str:
     x_enc = ts.lazy_ckks_vector_from(ct_bytes)
     x_enc.link_context(ctx)
 
-    # Scale weights and bias into the poly sigmoid's valid range [-5, 5].
-    # Worst-case |w·x+b| <= sum(|w|)+|b| ≈ 79.7; dividing by 16 keeps it <= 4.98.
-    # Scaling in numpy (not on the ciphertext) keeps the CKKS scale at 2^40.
-    # The label threshold (score >= 0.5) is preserved because sigmoid is monotone:
-    # sigmoid(w·x+b) >= 0.5  iff  w·x+b >= 0  iff  (w/16)·x + b/16 >= 0.
-    _S = 16.0
-    w_s = (w / _S).tolist()
-    b_s = b / _S
+    # Scale weights into poly_approx's fitted range [-POLY_RANGE, POLY_RANGE].
+    # Worst-case |w·x+b| ≈ 79.7 → dividing by POLY_SCALE keeps it within range.
+    # Sign is preserved (sigmoid monotone), so label (score >= 0.5) is unchanged.
+    w_s = (w / POLY_SCALE).tolist()
+    b_s = b / POLY_SCALE
 
     dot_enc    = x_enc.dot(w_s)
     linear_enc = dot_enc + b_s
 
-    # Degree-3 polynomial sigmoid: σ(t) ≈ 0.5 + 0.197t − 0.004t³
-    sq_enc    = linear_enc * linear_enc   # level +1
-    cubic_enc = sq_enc * linear_enc       # level +2
-    score_enc = linear_enc * 0.197 - cubic_enc * 0.004 + 0.5
+    # Degree-3 polynomial sigmoid (coefficients from poly_approx.py):
+    #   P(t) = POLY_A0 + POLY_A1*t + POLY_A3*t^3
+    sq_enc    = linear_enc * linear_enc          # depth +1
+    cubic_enc = sq_enc * linear_enc              # depth +2
+    score_enc = linear_enc * POLY_A1 + cubic_enc * POLY_A3 + POLY_A0
 
     return base64.b64encode(score_enc.serialize()).decode()
