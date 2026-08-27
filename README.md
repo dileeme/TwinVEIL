@@ -135,6 +135,6 @@ If you use TwinVEIL in academic work, please cite the forthcoming paper:
 
 ---
 
-## License
+## References 
 
-MIT License
+
