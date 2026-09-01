@@ -1,0 +1,246 @@
+{
+  "meta": {
+    "benchmark": "overhead",
+    "n_samples": 20,
+    "sample_source": "labelled.csv (20 rows, 10 anomalies)",
+    "telemetry_hz": 10.0,
+    "mean_ciphertext_b64_bytes": 1404973.0,
+    "mean_total_wire_bytes": 1754697.0,
+    "expansion_vs_features": 43905.40625,
+    "context_bytes_with_galois": 179735156,
+    "context_bytes_without_galois": 7902228,
+    "context_saving_pct": 95.6,
+    "uplink_mbps_encrypted": 112.39784,
+    "uplink_kbps_plaintext": 6.004000000000001,
+    "note": "Galois keys are generated in client/encryptor.py but the inference circuit performs no rotations, so the context can be shipped without them at no functional cost.",
+    "environment": {
+      "python": "3.12.5",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "tc_netem_available": false,
+      "transport": "MODELLED (see benchmarks/common.py docstring)"
+    }
+  },
+  "rows": [
+    {
+      "i": 0,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 76,
+      "ciphertext_raw_bytes": 1054061,
+      "ciphertext_b64_bytes": 1405416,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43919.2,
+      "expansion_vs_request": 18492.3,
+      "total_wire_bytes": 1755140
+    },
+    {
+      "i": 1,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 77,
+      "ciphertext_raw_bytes": 1053001,
+      "ciphertext_b64_bytes": 1404004,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43875.1,
+      "expansion_vs_request": 18233.8,
+      "total_wire_bytes": 1753728
+    },
+    {
+      "i": 2,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 75,
+      "ciphertext_raw_bytes": 1053599,
+      "ciphertext_b64_bytes": 1404800,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43900.0,
+      "expansion_vs_request": 18730.7,
+      "total_wire_bytes": 1754524
+    },
+    {
+      "i": 3,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 73,
+      "ciphertext_raw_bytes": 1053959,
+      "ciphertext_b64_bytes": 1405280,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43915.0,
+      "expansion_vs_request": 19250.4,
+      "total_wire_bytes": 1755004
+    },
+    {
+      "i": 4,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 74,
+      "ciphertext_raw_bytes": 1053245,
+      "ciphertext_b64_bytes": 1404328,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43885.2,
+      "expansion_vs_request": 18977.4,
+      "total_wire_bytes": 1754052
+    },
+    {
+      "i": 5,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 73,
+      "ciphertext_raw_bytes": 1054032,
+      "ciphertext_b64_bytes": 1405376,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43918.0,
+      "expansion_vs_request": 19251.7,
+      "total_wire_bytes": 1755100
+    },
+    {
+      "i": 6,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 77,
+      "ciphertext_raw_bytes": 1054189,
+      "ciphertext_b64_bytes": 1405588,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43924.6,
+      "expansion_vs_request": 18254.4,
+      "total_wire_bytes": 1755312
+    },
+    {
+      "i": 7,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 72,
+      "ciphertext_raw_bytes": 1054019,
+      "ciphertext_b64_bytes": 1405360,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43917.5,
+      "expansion_vs_request": 19518.9,
+      "total_wire_bytes": 1755084
+    },
+    {
+      "i": 8,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 78,
+      "ciphertext_raw_bytes": 1053677,
+      "ciphertext_b64_bytes": 1404904,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43903.2,
+      "expansion_vs_request": 18011.6,
+      "total_wire_bytes": 1754628
+    },
+    {
+      "i": 9,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 73,
+      "ciphertext_raw_bytes": 1053939,
+      "ciphertext_b64_bytes": 1405252,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43914.1,
+      "expansion_vs_request": 19250.0,
+      "total_wire_bytes": 1754976
+    },
+    {
+      "i": 10,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 76,
+      "ciphertext_raw_bytes": 1052969,
+      "ciphertext_b64_bytes": 1403960,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43873.8,
+      "expansion_vs_request": 18473.2,
+      "total_wire_bytes": 1753684
+    },
+    {
+      "i": 11,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 73,
+      "ciphertext_raw_bytes": 1053829,
+      "ciphertext_b64_bytes": 1405108,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43909.6,
+      "expansion_vs_request": 19248.1,
+      "total_wire_bytes": 1754832
+    },
+    {
+      "i": 12,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 74,
+      "ciphertext_raw_bytes": 1053893,
+      "ciphertext_b64_bytes": 1405192,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43912.2,
+      "expansion_vs_request": 18989.1,
+      "total_wire_bytes": 1754916
+    },
+    {
+      "i": 13,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 76,
+      "ciphertext_raw_bytes": 1053815,
+      "ciphertext_b64_bytes": 1405088,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43909.0,
+      "expansion_vs_request": 18488.0,
+      "total_wire_bytes": 1754812
+    },
+    {
+      "i": 14,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 73,
+      "ciphertext_raw_bytes": 1053134,
+      "ciphertext_b64_bytes": 1404180,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43880.6,
+      "expansion_vs_request": 19235.3,
+      "total_wire_bytes": 1753904
+    },
+    {
+      "i": 15,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 72,
+      "ciphertext_raw_bytes": 1054044,
+      "ciphertext_b64_bytes": 1405392,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43918.5,
+      "expansion_vs_request": 19519.3,
+      "total_wire_bytes": 1755116
+    },
+    {
+      "i": 16,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 79,
+      "ciphertext_raw_bytes": 1054145,
+      "ciphertext_b64_bytes": 1405528,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43922.8,
+      "expansion_vs_request": 17791.5,
+      "total_wire_bytes": 1755252
+    },
+    {
+      "i": 17,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 80,
+      "ciphertext_raw_bytes": 1054121,
+      "ciphertext_b64_bytes": 1405496,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43921.8,
+      "expansion_vs_request": 17568.7,
+      "total_wire_bytes": 1755220
+    },
+    {
+      "i": 18,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 77,
+      "ciphertext_raw_bytes": 1053034,
+      "ciphertext_b64_bytes": 1404048,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43876.5,
+      "expansion_vs_request": 18234.4,
+      "total_wire_bytes": 1753772
+    },
+    {
+      "i": 19,
+      "plaintext_features_bytes": 32,
+      "plaintext_request_bytes": 73,
+      "ciphertext_raw_bytes": 1053869,
+      "ciphertext_b64_bytes": 1405160,
+      "result_b64_bytes": 349724,
+      "expansion_vs_features": 43911.2,
+      "expansion_vs_request": 19248.8,
+      "total_wire_bytes": 1754884
+    }
+  ]
+}
