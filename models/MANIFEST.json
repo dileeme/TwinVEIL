@@ -1,0 +1,45 @@
+{
+  "_comment": [
+    "Provenance and integrity record for the model artefacts consumed by Module 1.",
+    "These files are NOT trained here. They are produced by scripts/step3_train.py on",
+    "the Twinveil-module2 branch and copied in verbatim. Never hand-edit or retype them:",
+    "a rounded transcription is what caused the 2026-09 drift this manifest now guards.",
+    "tests/test_model_contract.py enforces every field below."
+  ],
+  "source": {
+    "repository": "https://github.com/dileeme/TwinVEIL.git",
+    "branch": "Twinveil-module2",
+    "commit": "1d92e23413d8dd4c63d1ac7d6d0f8c6379c69e6a",
+    "generated_by": "scripts/step3_train.py",
+    "model": "sklearn.linear_model.LogisticRegression(solver='lbfgs', max_iter=500, C=1.0, class_weight='balanced', random_state=42)"
+  },
+  "artefacts": {
+    "lr_weights.npy": {
+      "sha256": "6a62a805c147087cccc03c498ad467ef9a5f720d418e3c569869449a354e9114",
+      "shape": [4],
+      "dtype": "float64",
+      "feature_order": ["speed", "longitudinal_accel", "steering_angle", "brake_pressure"]
+    },
+    "lr_bias.npy": {
+      "sha256": "515568b7c72b8274783a6dbc50eec735661f3ecdebc94d4c68d6c0cc45eb4971",
+      "shape": [],
+      "dtype": "float64"
+    },
+    "scaler_bounds.json": {
+      "sha256": "37bbb56c1efc29b0233a1aa233de99207ea723ad78826599f9df0c82e2a7a46f"
+    }
+  },
+  "he_compatibility": {
+    "_comment": [
+      "The encrypted path divides the logit by POLY_SCALE before evaluating the degree-3",
+      "polynomial. P(t) exceeds 0.5 only on 0 < t < poly_positive_root. If the worst-case",
+      "scaled logit (sum|w| + |b|) / POLY_SCALE ever reaches that root, labels invert",
+      "silently on extreme inputs. Retraining is the realistic way to break this."
+    ],
+    "worst_case_abs_logit": 79.68254596175011,
+    "poly_scale": 16.0,
+    "worst_case_scaled_logit": 4.980159122609382,
+    "poly_positive_root": 6.660805422627806,
+    "margin": 1.6806463000184246
+  }
+}
