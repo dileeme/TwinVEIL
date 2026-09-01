@@ -47,13 +47,16 @@ Decryption & interpretation (trusted domain)
 
 ## Repository layout
 
-This repository is split across two working branches plus an integration tree.
+This repository is split across three branches.
 
 | Branch | Contents |
 |--------|----------|
 | `Twinveil-module1` | Module 1 — the CKKS encrypted pipeline |
 | `Twinveil-module2` | Module 2 — the plaintext ML baseline that trains the model |
-| `main` | integration branch |
+| `main` | integration harness (`run_all.py`) that validates both together |
+
+Module 1 does not train anything and Module 2 does not encrypt anything. The seam
+between them is the exported model — see **Validating both modules** below.
 
 ```text
 Twinveil-module1
@@ -64,9 +67,15 @@ Twinveil-module1
 │   ├── main.py                 FastAPI app
 │   ├── inference.py            predict_plaintext + predict_encrypted
 │   └── poly_approx.py          degree-3 sigmoid approximation
-├── models/                     lr_weights.npy, lr_bias.npy, scaler_bounds.json
+├── models/
+│   ├── lr_weights.npy          imported verbatim from Twinveil-module2
+│   ├── lr_bias.npy             (never retype these — see limitation 7)
+│   ├── scaler_bounds.json
+│   └── MANIFEST.json           provenance + checksums + HE compatibility margin
 ├── configs/ckks.yaml           reference CKKS parameters (see Known limitations)
-├── tests/test_pipeline.py      17 end-to-end tests
+├── tests/
+│   ├── test_pipeline.py        17 end-to-end encrypted-pipeline tests
+│   └── test_model_contract.py   9 model-integrity and HE-compatibility tests
 └── requirements.txt
 
 Twinveil-module2
@@ -115,7 +124,7 @@ Python 3.12. A prepared virtual environment lives at `TwinModule2/.venv`.
 
 ```powershell
 pip install -r requirements.txt
-python -m pytest tests/test_pipeline.py -v
+python -m pytest tests/ -v          # 26 tests
 ```
 
 Against a live server:
@@ -137,6 +146,33 @@ python run.py
 
 This runs data generation → cleaning → labelling → training → endpoint tests, and
 writes `models/lr_weights.npy` and `models/lr_bias.npy`.
+
+### Validating both modules together
+
+Check the three branches out as siblings, then run the harness from `main`:
+
+```text
+TWIN/
+├── Twin-main/          <- main
+├── TwinModule1/
+│   └── TwinVEIL/       <- Twinveil-module1
+└── TwinModule2/        <- Twinveil-module2
+```
+
+```powershell
+cd Twin-main
+python run_all.py              # contract check + both test suites
+python run_all.py --contract   # contract check only (fast)
+```
+
+Stage 0 verifies that Module 1's model artefacts are byte-identical to Module 2's
+export. If they diverge, the run stops and prints the exact `cp` commands to fix
+it. Stages 1 and 2 run the two test suites (26 + 6 tests).
+
+**After retraining**, always re-import the export verbatim and refresh the
+checksums in `models/MANIFEST.json` — then re-run `run_all.py`. If the retrained
+weights push `(Σ|w| + |b|) / POLY_SCALE` past 6.661,
+`test_model_contract.py` will fail rather than let labels invert silently.
 
 ### API
 
@@ -169,9 +205,10 @@ to bring it inside that interval.
 
 ## Results
 
-**Module 1** — 17/17 tests pass (~23 s), covering the encryption round trip,
+**Module 1** — 26/26 tests pass (~17 s): 17 covering the encryption round trip,
 encrypted inference through the FastAPI app, and label agreement between the
-encrypted and plaintext paths on every test sample.
+encrypted and plaintext paths on every test sample; plus 9 enforcing model
+integrity and the polynomial's label-preserving range.
 
 **Module 2** — logistic regression on a held-out 20% split (59,924 rows):
 
@@ -208,11 +245,13 @@ is unchanged), but absolute scores diverge from the plaintext path by up to ~0.4
 Treat the encrypted output as a binary decision, not a calibrated probability, and
 do not compare the two scores numerically without correcting for the scaling.
 
-**3. `POLY_SCALE` is not tied to the trained weights.** `P(z) > 0.5` only for
-`0 < z < 6.661`, and the current worst-case scaled logit is
-`(Σ|w| + |b|)/16 = 4.98` — a margin that holds for *these* weights only. Retraining
-to larger weights would silently invert labels on extreme inputs. A guard asserting
-`(Σ|w| + |b|) / POLY_SCALE < 6.661` at import time is needed.
+**3. `POLY_SCALE` is coupled to the trained weights, and only tests enforce it.**
+`P(z) > 0.5` only for `0 < z < 6.661`, and the current worst-case scaled logit is
+`(Σ|w| + |b|)/16 = 4.98` — a margin of 1.68 that holds for *these* weights only.
+Retraining to larger weights would silently invert labels on extreme inputs.
+`tests/test_model_contract.py` now fails if that margin is breached, but
+`inference.py` still has no runtime assertion, so a deployment that skips the test
+suite is unprotected.
 
 **4. No authentication or transport security.** `/upload_context` is unauthenticated
 and stores into a single shared slot, so any caller can replace the evaluation
@@ -227,9 +266,13 @@ the plaintext score and label in Redis. `/predict_he` currently stores nothing.
 **6. `configs/ckks.yaml` is not read by any code.** The parameters are hardcoded in
 `client/encryptor.py`; the YAML file is reference documentation until it is wired up.
 
-**7. Model artefacts have drifted between branches.** The `.npy` weights on this
-branch are not bit-identical to the Module 2 export (differences ~1e-5). Regenerate
-from `Twinveil-module2` for reproducible results.
+**7. Model artefacts previously drifted between branches — now guarded.** The `.npy`
+weights on the Module 1 branch had been transcribed at 4 decimal places rather than
+copied (differences ~5e-5), so the encrypted path served a slightly different model
+than Module 2 measured. They are now bit-identical, with provenance and checksums
+recorded in `models/MANIFEST.json` and enforced by `tests/test_model_contract.py`
+and by `run_all.py` on the `main` branch. Always copy the export verbatim; never
+retype it.
 
 **8. `data/` is gitignored.** A fresh clone of `Twinveil-module2` must run `run.py`
 before `step4_test.py` will pass, since the test reads `data/processed/labelled.csv`.
@@ -257,6 +300,7 @@ before `step4_test.py` will pass, since the test reads `data/processed/labelled.
 * [x] CKKS pipeline implementation (Module 1)
 * [x] Encrypted inference integration (Module 1)
 * [x] Plaintext ML baseline (Module 2)
+* [x] Model contract enforced across branches (manifest + tests + run_all.py)
 * [ ] Polynomial-approximation hardening (limitations 2 and 3)
 * [ ] Non-circular dataset / temporal evaluation (limitation 1)
 * [ ] Network simulation (Module 3)
